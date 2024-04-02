@@ -1,7 +1,5 @@
-import { View, Text } from "react-native";
 import React from "react";
-import { Link, Redirect, useFocusEffect, useRouter } from "expo-router";
-import OnboardingScreen from "./onboarding";
+import { useFocusEffect, useRouter } from "expo-router";
 
 export default function Page() {
   const isLoggedIn = false;

@@ -6,7 +6,7 @@ import {
   Pressable,
   StatusBar,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesome5 } from "@expo/vector-icons";
 import {
@@ -21,7 +21,7 @@ import {
   useFonts,
   Inter_900Black,
 } from "@expo-google-fonts/inter";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -36,7 +36,7 @@ type TSteps = {
 const onboardingSteps = [
   {
     icon: "people-arrows",
-    title: "Hey, there",
+    title: "Join in the Buzz",
     description:
       "Don't miss tech conversations happening right now. Jump into the feed, see what's trending, and join the buzz before it fades.",
   },
@@ -59,7 +59,37 @@ export default function OnboardingScreen() {
 
   const data = onboardingSteps[screenIndex];
 
-  const [fontsLoaded, fontError] = useFonts({
+  // ========= Move the onboarding screen's steps
+  useEffect(() => {
+    // * This function is called wheneever screenIndex changes
+    // * So we define a timer
+    let timer: any;
+
+    function scrollOnboardingSteps() {
+      const isLastScreen = screenIndex === onboardingSteps.length - 1;
+
+      if (!isLastScreen) {
+        setScreenIndex((oldScreenIndex) => oldScreenIndex + 1);
+      } else {
+        setScreenIndex(0);
+      }
+    }
+
+    // ! Clear any existing timer that might have been created
+    clearTimeout(timer);
+
+    // * Now we set a timer to scroll the steps in 4000s
+    // ? if screenIndex changes again, the function restarts, and clears the existing timer
+    // NB This is helpful so that when the user scrolls the page using gesture(screenIndex will change), the useEffect is called, the timer is cleared, and then we set a new timer of 4s
+    timer = setTimeout(scrollOnboardingSteps, 4000);
+
+    // ! Cleanup function, if the component unmounts
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [screenIndex]);
+
+   const [fontsLoaded, _fontError] = useFonts({
     InterThin: Inter_100Thin,
     InterSemiBold: Inter_600SemiBold,
     InterBold: Inter_900Black,
@@ -72,50 +102,34 @@ export default function OnboardingScreen() {
 
   function onContinue() {
     const isLastScreen = screenIndex === onboardingSteps.length - 1;
-
     if (isLastScreen) {
-      endOnBoarding();
+      // endOnBoarding();
+      // do something
     } else {
       setScreenIndex(screenIndex + 1);
     }
-    console.log("Tried");
   }
 
   function onBack() {
     const isFirstScreen = screenIndex === 0;
 
     if (isFirstScreen) {
-      endOnBoarding();
+      // endOnBoarding();
+      // do something
     } else {
       setScreenIndex(screenIndex - 1);
     }
   }
 
-  function endOnBoarding() {
+  function goToLogin() {
     setScreenIndex(0);
-    router.replace("/login");
+    router.push("/login");
   }
 
-  const swipeForward = Gesture.Fling();
-  swipeForward.direction(Directions.LEFT);
-  swipeForward.onEnd(() => {
-    onContinue();
-  });
-
-  const swipeBackward = Gesture.Fling();
-  swipeBackward.direction(Directions.RIGHT);
-  swipeBackward.onEnd(() => {
-    onBack();
-  });
-
-  const swipes = Gesture.Simultaneous(swipeBackward, swipeForward);
-
-  // const swipes = Gesture.Simultaneous(
-  //   Gesture.Fling().direction(Directions.LEFT).onEnd(onContinue),
-  //   Gesture.Simultaneous(
-  //     Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack)
-  //   )
-  // );
+  const swipes = Gesture.Simultaneous(
+    Gesture.Fling().direction(Directions.LEFT).onEnd(onContinue),
+    Gesture.Fling().direction(Directions.RIGHT).onEnd(onBack)
+  );
 
   return (
     <Page>
@@ -130,33 +144,45 @@ export default function OnboardingScreen() {
             })}
           </StepIndicator>
           <Animated.View entering={FadeIn} exiting={FadeOut}>
-            <Image name={data.icon} color="#CEF202" size={130} />
+            {data.icon !== undefined ? (
+              <Image name={data.icon} color="#FC84A4" size={130} />
+            ) : null}
           </Animated.View>
           <Footer>
             <Title entering={SlideInRight.delay(100)} exiting={SlideOutLeft}>
               {data.title}
             </Title>
             <Description
-              entering={SlideInRight.delay(200)}
+              entering={SlideInRight.delay(130)}
               exiting={SlideOutLeft}
             >
               {data.description}
             </Description>
-            <Actions>
+            {/* <Actions>
               <SkipButton onPress={endOnBoarding}>
                 <ButtonText>Skip</ButtonText>
               </SkipButton>
               <ContinueButton onPress={onContinue}>
                 <ButtonText>Continue</ButtonText>
-                {/* <ForwardIcon name="chevron-forward" size={20} color={"white"} /> */}
               </ContinueButton>
-            </Actions>
+            </Actions> */}
+            <LoginButton onPress={goToLogin}>
+              <ButtonText style={{ color: "black" }}>Login</ButtonText>
+            </LoginButton>
+            <SignUpButton href={"/(auth)/register"} asChild>
+              <ButtonText>
+                New to LinkDev?{" "}
+                <Text style={{ color: primaryColor }}>Sign up</Text>
+              </ButtonText>
+            </SignUpButton>
           </Footer>
         </MainContent>
       </GestureDetector>
     </Page>
   );
 }
+
+const primaryColor = "#FC84A4";
 
 // * SafeAreaView does not allow us have a padding, because it does the padding based on the safeArea of the image for us
 const Page = styled(SafeAreaView)`
@@ -172,17 +198,17 @@ const MainContent = styled(View)`
 
 const Image = styled(FontAwesome5)`
   align-self: center;
-  /* margin-bottom: 20px; */
-  margin-top: 50px;
+  margin-top: 30px;
 `;
 
 const Title = styled(Animated.Text)`
   color: #fdfdfd;
-  font-size: 48px;
+  font-size: 38px;
   font-weight: bold;
   font-family: InterBold;
   letter-spacing: 1.2px;
   margin-bottom: 10px;
+  text-align: center;
 `;
 
 const Description = styled(Animated.Text)`
@@ -190,38 +216,36 @@ const Description = styled(Animated.Text)`
   font-size: 20px;
   font-family: InterRegular;
   line-height: 28px;
+  text-align: center;
 `;
 
 const Footer = styled(View)`
   justify-self: flex-start;
-  /* border: solid 2px red; */
   margin-top: auto;
   // * auto tells the browser to automaticallky calculate the space between the element and its parent and then creates a margin of that space
 `;
 
-const Actions = styled(View)`
-  /* border: solid 2px red; */
-  flex-direction: row;
-  gap: 10px;
-  margin-top: 20px;
-`;
+// const Actions = styled(View)`
+//   flex-direction: row;
+//   gap: 10px;
+//   margin-top: 20px;
+// `;
 
-const SkipButton = styled(Pressable)`
-  flex: 0.3;
-  padding: 13px;
-  /* border: solid 2px red; */
-`;
+// const SkipButton = styled(Pressable)`
+//   flex: 0.3;
+//   padding: 13px;
+// `;
 
-const ContinueButton = styled(Pressable)`
-  flex: 1;
-  padding: 13px;
-  background-color: #302e38;
-  border-radius: 30px;
-  flex-direction: row;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-`;
+// const ContinueButton = styled(Pressable)`
+//   flex: 1;
+//   padding: 13px;
+//   background-color: #302e38;
+//   border-radius: 30px;
+//   flex-direction: row;
+//   gap: 10px;
+//   justify-content: center;
+//   align-items: center;
+// `;
 
 const ButtonText = styled(Text)`
   color: #fff;
@@ -240,7 +264,18 @@ const StepIndicator = styled(View)`
 
 const Step = styled(View)<TSteps>`
   height: 3px;
-  background-color: ${(props) => (props.active ? "#CEF202" : "gray")};
+  background-color: ${(props) => (props.active ? "#FC84A4" : "gray")};
   flex: 0.5;
   border-radius: 5px;
+`;
+
+const LoginButton = styled(Pressable)`
+  background-color: ${primaryColor};
+  padding: 12px;
+  border-radius: 30px;
+  margin-top: 60px;
+`;
+
+const SignUpButton = styled(Link)`
+  margin-top: 20px;
 `;

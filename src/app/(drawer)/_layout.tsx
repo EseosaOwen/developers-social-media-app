@@ -20,7 +20,7 @@ function CustomDrawer(props: any) {
   return (
     <DrawerContentScrollView
       {...props}
-      style={{ backgroundColor: "black", width: "100%" }}
+      style={{ backgroundColor: "#15141a", width: "100%" }}
     >
       <UserInfo>
         <UserImage source={require("../../assets/images/prettywoman.jpg")} />
@@ -42,13 +42,13 @@ function CustomDrawer(props: any) {
         labelStyle={{
           marginLeft: -20,
           fontSize: 18,
-          color: pathname === "/home/feed" ? "black" : "white",
+          color: pathname === "/home/feed" ? "#15141a" : "white",
         }}
         pathname={pathname} // custom props for styled components
         onPress={() => router.push("/(drawer)/(tabs)/home/feed")}
       />
       <CustomDrawerItem
-        icon={({ color, size }) => (
+        icon={({ size }) => (
           <AntDesign
             name="bells"
             color={pathname == "/notifications/all" ? "#111" : "#fff"}
@@ -60,7 +60,7 @@ function CustomDrawer(props: any) {
         labelStyle={{
           marginLeft: -20,
           fontSize: 18,
-          color: pathname === "/notifications/all" ? "black" : "white",
+          color: pathname === "/notifications/all" ? "#15141a" : "white",
         }}
         label="Notifications"
         onPress={() => router.push("/(drawer)/(tabs)/notifications/all")}
@@ -80,7 +80,7 @@ export default function _layout() {
             windowWidth < 800
               ? windowWidth - 30
               : windowWidth - windowWidth / 2,
-          backgroundColor: "black",
+          backgroundColor: "#15141a",
         },
         headerShown: false,
         drawerIcon: ({ color, size }) => (
@@ -94,7 +94,7 @@ export default function _layout() {
 
 const CustomDrawerItem = styled(DrawerItem)<TCustomDrawerItem>`
   background-color: ${(props) =>
-    props.pathname === props.path ? "white" : "rgba(0, 0, 0, 0.7)"};
+    props.pathname === props.path ? "white" : "#15141a"};
 `;
 
 const UserInfo = styled(View)`
