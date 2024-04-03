@@ -1,17 +1,13 @@
 import {
   View,
   Text,
-  SafeAreaView,
-  Image,
   TextInput,
-  Pressable,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
-  StatusBar,
   StyleSheet,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -25,17 +21,12 @@ import { borderRadius, primaryColor } from "../../constants/colors";
 import { Button } from "../../constants/components";
 import { Link } from "expo-router";
 import { Ionicons, SimpleLineIcons, MaterialIcons } from "@expo/vector-icons";
-
-// import { Ionicons } from "@expo/vector-icons";
-// import { router } from "expo-router";
-
-type TInputLabel = {
-  isInputFocused: boolean;
-};
+import CheckBox from "expo-checkbox";
 
 export default function Login() {
   const [emailField, setEmailField] = useState("");
   const [passwordField, setPasswordField] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [fontsLoaded, fontsError] = useFonts({
     Inter: Inter_900Black,
     InterRegular: Inter_400Regular,
@@ -47,7 +38,7 @@ export default function Login() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+    <KeyboardAvoidingView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Container>
           <Title>
@@ -96,13 +87,25 @@ export default function Login() {
               marginTop: 15,
             }}
           >
-            <Text style={pageConstants.textFont}>Remember Me</Text>
+            <RememberMe>
+              <CheckBox
+                value={rememberMe}
+                onValueChange={setRememberMe}
+                color={rememberMe ? primaryColor : "#F4ECEC"}
+              />
+              <Pressable onPress={() => setRememberMe((oldState) => !oldState)}>
+                <Text style={pageConstants.textFont}>Remember Me</Text>
+              </Pressable>
+            </RememberMe>
             <Text style={[pageConstants.textFont, { color: primaryColor }]}>
               Forgot password?
             </Text>
           </View>
           <Buttons>
-            <Button style={{ marginBottom: 20 }}>
+            <Button
+              style={{ marginBottom: 20 }}
+              onPress={() => console.log("pressed")}
+            >
               <Text
                 style={{
                   textAlign: "center",
@@ -132,26 +135,40 @@ export default function Login() {
               </Text>
             </GoogleButton>
           </Buttons>
-          <CreateAnAccountLink href={"/register"} replace>
-            <Text
-              style={[
-                pageConstants.textAlignCenter,
-                pageConstants.textFont,
-                { fontSize: 16, color: "gray" },
-              ]}
+          {/* // ! It's advisable to always add a touchable opacity nested in a link, its better for the opacity click feeling and its also removes that grey onClick background */}
+          <Link href={"/register"} replace asChild>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                marginTop: 60,
+                marginBottom: 60,
+              }}
             >
-              Don't have an account?{" "}
+              <Text
+                style={
+                  (pageConstants.textFont,
+                  {
+                    fontSize: 16,
+                    color: "gray",
+                  })
+                }
+              >
+                {" "}
+                Don't have an account?{" "}
+              </Text>
               <Text
                 style={{
                   color: primaryColor,
                   fontWeight: "600",
                   fontFamily: "InterMedium",
+                  fontSize: 16,
                 }}
               >
                 Create an account
               </Text>
-            </Text>
-          </CreateAnAccountLink>
+            </TouchableOpacity>
+          </Link>
         </Container>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -233,9 +250,10 @@ const GoogleButton = styled(TouchableOpacity)`
   border-radius: ${borderRadius};
 `;
 
-const CreateAnAccountLink = styled(Link)`
-  margin-top: auto;
-  margin-bottom: 60px;
+const RememberMe = styled(View)`
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
 `;
 
 // const [labelTransition, setLabelTransition] = useState({

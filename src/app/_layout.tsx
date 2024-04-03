@@ -1,11 +1,25 @@
-import React from "react";
-import { Stack, router } from "expo-router";
+import React, { useEffect } from "react";
+import { Stack, router, usePathname } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AppProvider from "../provider/AppProvider";
-import { Text, TouchableOpacity } from "react-native";
+import { StatusBar, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Layout() {
+  const path = usePathname();
+
+  useEffect(() => {
+    if (path) {
+      switch (path) {
+        case "/onboarding":
+          StatusBar.pushStackEntry({ barStyle: "light-content" });
+          break;
+        case "/login":
+          StatusBar.pushStackEntry({ barStyle: "dark-content" });
+      }
+    }
+  }, [path]);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AppProvider>

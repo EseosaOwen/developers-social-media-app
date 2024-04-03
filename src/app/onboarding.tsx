@@ -28,6 +28,7 @@ import Animated, {
   SlideInRight,
   SlideOutLeft,
 } from "react-native-reanimated";
+import { Button } from "../constants/components";
 
 type TSteps = {
   active: boolean;
@@ -89,7 +90,7 @@ export default function OnboardingScreen() {
     };
   }, [screenIndex]);
 
-   const [fontsLoaded, _fontError] = useFonts({
+  const [fontsLoaded, _fontError] = useFonts({
     InterThin: Inter_100Thin,
     InterSemiBold: Inter_600SemiBold,
     InterBold: Inter_900Black,
@@ -137,12 +138,14 @@ export default function OnboardingScreen() {
 
       <GestureDetector gesture={swipes}>
         <MainContent key={screenIndex}>
+          <Logo>
+            Link
+            <Text style={{ fontWeight: "800", color: primaryColor }}>
+              Dev<Text style={{ color: "white" }}>.</Text>
+            </Text>
+          </Logo>
           {/* // ! Adding a unique key, tells react native to recreate the components on the screen when the key is different, so whenever we add the key react native recreates rhe component, and when the component is recreated the animation is triggered */}
-          <StepIndicator>
-            {onboardingSteps.map((_step, index) => {
-              return <Step key={index} active={index === screenIndex} />;
-            })}
-          </StepIndicator>
+
           <Animated.View entering={FadeIn} exiting={FadeOut}>
             {data.icon !== undefined ? (
               <Image name={data.icon} color="#FC84A4" size={130} />
@@ -158,6 +161,11 @@ export default function OnboardingScreen() {
             >
               {data.description}
             </Description>
+            <StepIndicator>
+              {onboardingSteps.map((_step, index) => {
+                return <Step key={index} active={index === screenIndex} />;
+              })}
+            </StepIndicator>
             {/* <Actions>
               <SkipButton onPress={endOnBoarding}>
                 <ButtonText>Skip</ButtonText>
@@ -166,9 +174,9 @@ export default function OnboardingScreen() {
                 <ButtonText>Continue</ButtonText>
               </ContinueButton>
             </Actions> */}
-            <LoginButton onPress={goToLogin}>
+            <Button onPress={goToLogin} style={{ marginTop: 30 }}>
               <ButtonText style={{ color: "black" }}>Login</ButtonText>
-            </LoginButton>
+            </Button>
             <SignUpButton href={"/(auth)/register"} asChild>
               <ButtonText>
                 New to LinkDev?{" "}
@@ -189,6 +197,14 @@ const Page = styled(SafeAreaView)`
   flex: 1;
   justify-content: center;
   background-color: #15141a;
+`;
+
+const Logo = styled(Text)`
+  color: white;
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  margin-top: ${`${StatusBar.currentHeight}px`};
 `;
 
 const MainContent = styled(View)`
@@ -258,22 +274,23 @@ const StepIndicator = styled(View)`
   flex-direction: row;
   gap: 8px;
   align-items: center;
-  margin-bottom: 80px;
+  margin-top: 70px;
   padding-top: ${StatusBar.currentHeight}px;
+  justify-content: center;
 `;
 
 const Step = styled(View)<TSteps>`
-  height: 3px;
+  height: 10px;
+  width: 10px;
   background-color: ${(props) => (props.active ? "#FC84A4" : "gray")};
-  flex: 0.5;
-  border-radius: 5px;
+  /* flex: 0.5; */
+  border-radius: 50px;
 `;
 
 const LoginButton = styled(Pressable)`
   background-color: ${primaryColor};
   padding: 12px;
   border-radius: 30px;
-  margin-top: 60px;
 `;
 
 const SignUpButton = styled(Link)`

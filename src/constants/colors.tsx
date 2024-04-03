@@ -1,2 +1,2 @@
 export const primaryColor = "#FC84A4";
-export const borderRadius = "15px";
+export const borderRadius = "20px";
