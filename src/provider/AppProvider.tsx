@@ -1,12 +1,18 @@
 import { QueryClientProvider, QueryClient } from "react-query";
+import { Provider } from "react-redux";
+import createStore from "../toolkit/app/store";
 
-type AppProvider = {
+type TAppProvider = {
   children: React.ReactNode;
 };
 
-export default function AppProvider({ children }: AppProvider) {
+export default function AppProvider({ children }: TAppProvider) {
   const queryClient = new QueryClient();
+  const store = createStore();
+
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>{children}</Provider>
+    </QueryClientProvider>
   );
 }

@@ -28,7 +28,7 @@ import Animated, {
   SlideInRight,
   SlideOutLeft,
 } from "react-native-reanimated";
-import { Button } from "../constants/components";
+import { Button } from "./src/constants/components";
 
 type TSteps = {
   active: boolean;

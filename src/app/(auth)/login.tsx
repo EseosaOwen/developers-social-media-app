@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  StatusBar,
 } from "react-native";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -19,9 +20,13 @@ import {
 } from "@expo-google-fonts/inter";
 import { borderRadius, primaryColor } from "../../constants/colors";
 import { Button } from "../../constants/components";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Ionicons, SimpleLineIcons, MaterialIcons } from "@expo/vector-icons";
 import CheckBox from "expo-checkbox";
+import axios from "axios";
+import { useQuery } from "react-query";
+import { useDispatch } from "react-redux";
+import { setSignInUser } from "../../toolkit/features/userSlice";
 
 export default function Login() {
   const [emailField, setEmailField] = useState("");
@@ -33,12 +38,42 @@ export default function Login() {
     InterMedium: Inter_500Medium,
   });
 
+  async function testFetch() {
+    const response = await axios.get("http://192.168.0.168:7000/api/user");
+    return response.data;
+  }
+
+  const { data: _usersData } = useQuery("test-user", testFetch, {
+    onSuccess: () => console.log("Fetch Successful"),
+    onError: (error) => console.log("error", error),
+  });
+
+  console.log("Rest");
+
+  const dispatch = useDispatch();
+
+  function handleSubmit() {
+    dispatch(
+      setSignInUser({
+        _id: "2",
+        firstName: "Owen",
+        lastName: "Puissant",
+        email: "omobill2000@gmail.com",
+        password: "Owen123",
+        phoneNo: "+2348113623694",
+      })
+    );
+
+    // router.replace("/(authenticated)/(tabs)/home/feed");
+  }
+
   if (!fontsLoaded) {
     return null;
   }
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
+      <StatusBar barStyle={"dark-content"} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Container>
           <Title>
@@ -102,10 +137,7 @@ export default function Login() {
             </Text>
           </View>
           <Buttons>
-            <Button
-              style={{ marginBottom: 20 }}
-              onPress={() => console.log("pressed")}
-            >
+            <Button style={{ marginBottom: 20 }} onPress={handleSubmit}>
               <Text
                 style={{
                   textAlign: "center",

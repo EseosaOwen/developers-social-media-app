@@ -1,6 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Drawer } from "expo-router/drawer";
-import { Image, Text, View, useWindowDimensions } from "react-native";
+import {
+  Image,
+  StatusBar,
+  Text,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { router, usePathname } from "expo-router";
@@ -22,6 +28,7 @@ function CustomDrawer(props: any) {
       {...props}
       style={{ backgroundColor: "#15141a", width: "100%" }}
     >
+      <StatusBar barStyle={"light-content"} />
       <UserInfo>
         <UserImage source={require("../../assets/images/prettywoman.jpg")} />
         <UserDetails>
@@ -45,7 +52,7 @@ function CustomDrawer(props: any) {
           color: pathname === "/home/feed" ? "#15141a" : "white",
         }}
         pathname={pathname} // custom props for styled components
-        onPress={() => router.push("/(drawer)/(tabs)/home/feed")}
+        onPress={() => router.push("/(authenticated)/(tabs)/home/feed")}
       />
       <CustomDrawerItem
         icon={({ size }) => (
@@ -63,7 +70,7 @@ function CustomDrawer(props: any) {
           color: pathname === "/notifications/all" ? "#15141a" : "white",
         }}
         label="Notifications"
-        onPress={() => router.push("/(drawer)/(tabs)/notifications/all")}
+        onPress={() => router.push("/(authenticated)/(tabs)/notifications/all")}
       />
     </DrawerContentScrollView>
   );
@@ -78,7 +85,7 @@ export default function _layout() {
         drawerStyle: {
           width:
             windowWidth < 800
-              ? windowWidth - 30
+              ? windowWidth - 50
               : windowWidth - windowWidth / 2,
           backgroundColor: "#15141a",
         },
