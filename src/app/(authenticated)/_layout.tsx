@@ -40,16 +40,16 @@ function CustomDrawer(props: any) {
         icon={({ color, size }) => (
           <MaterialIcons
             name="list"
-            color={pathname == "/home/feed" ? "#111" : "#fff"}
+            color={pathname == "/home" ? "#111" : "#fff"}
             size={size}
           />
         )}
-        path="/home/feed" // custom props for styled components
+        path="/home" // custom props for styled components
         label="Feed"
         labelStyle={{
           marginLeft: -20,
           fontSize: 18,
-          color: pathname === "/home/feed" ? "#15141a" : "white",
+          color: pathname === "/home" ? "#15141a" : "white",
         }}
         pathname={pathname} // custom props for styled components
         onPress={() => router.push("/(authenticated)/(tabs)/home/feed")}

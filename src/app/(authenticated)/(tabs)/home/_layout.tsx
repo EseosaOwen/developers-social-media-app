@@ -17,7 +17,7 @@ export default function Layout() {
                 onPress={() =>
                   navigation.dispatch(DrawerActions.toggleDrawer())
                 }
-                style={{ marginLeft: 20 }}
+                style={{ marginLeft: 20, marginRight: 20 }}
               >
                 <Image
                   source={require("../../../../assets/images/prettywoman.jpg")}
@@ -30,7 +30,12 @@ export default function Layout() {
           headerShadowVisible: false,
         }}
       />
-      <Stack.Screen name="feed" />
+      <Stack.Screen
+        name="feed"
+        options={{
+          presentation: "modal",
+        }}
+      />
     </Stack>
   );
 }

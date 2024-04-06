@@ -39,7 +39,7 @@ export default function Login() {
   });
 
   async function testFetch() {
-    const response = await axios.get("http://192.168.0.168:7000/api/user");
+    const response = await axios.get("http://192.168.1.102:7000/api/user");
     return response.data;
   }
 
